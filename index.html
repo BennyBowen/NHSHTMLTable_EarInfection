@@ -297,15 +297,15 @@
       // ✅ Populate your existing fields
       setText("full-name", record.firstName);
       setText("patient-age", record.patientAge);
-      setText("ni-number", record.NationalInsuranceNumber);
-      setText("location", record.CurrentLocation);
-      setText("callback", record.CallbackNumber);
-      setText("reason", record.ReasonForCall);
+      setText("ni-number", record.nationalInsuranceNumber);
+      setText("location", record.currentLocation);
+      setText("callback", record.callbackNumber);
+      setText("reason", record.reasonForCall);
 
       // ✅ Badge values
-      setBadge("sob-badge", record.ShortnessOfBreath);
-      setBadge("chest-pain-badge", record.ChestPain);
-      setBadge("temp-badge", record.NormalTemperature);
+      setBadge("sob-badge", record.shortnessBreath);
+      setBadge("chest-pain-badge", record.chestPain);
+      setBadge("temp-badge", record.normalTemp);
 
     } catch (err) {
       console.error("Failed to load caller data:", err);
