@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>NHS 111 – Call Summary</title>
+
+  <style>
+    :root{
+      /* NHS brand colours */
+      --nhs-blue: #005EB8;          /* NHS Blue */
+      --nhs-dark-blue: #003087;     /* Dark blue shade */
+      --nhs-white: #FFFFFF;
+      --nhs-text: #212B32;          /* Primary text colour (NHS service manual) */
+      --nhs-secondary-text: #4C6272;/* Secondary text colour */
+      --nhs-border: #D8DDE0;        /* Standard border colour */
+      --nhs-success: #007F3B;       /* Success state */
+      --nhs-error: #D5281B;         /* Error state / urgent */
+      --nhs-warn: #FFB81C;          /* Warm yellow highlight */
+      --nhs-grey-bg: #F3F2F1;       /* Soft page background tint */
+      --nhs-link: #005EB8;          /* Link colour */
+      --nhs-link-hover: #7C2855;    /* Hover */
+      --nhs-link-visited: #330072;  /* Visited */
+      --nhs-link-active: #002F5C;   /* Active */
+      --radius: 8px;
+    }
+
+    html, body {
+      background: var(--nhs-grey-bg);
+      color: var(--nhs-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      line-height: 1.45;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nhs-header {
+      background: var(--nhs-blue);
+      color: var(--nhs-white);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nhs-header .lozenge {
+      /* Simple proportional 'NHS' lozenge (non-official asset) */
+      display: inline-block;
+      background: var(--nhs-white);
+      color: var(--nhs-blue);
+      font-weight: 800;
+      border-radius: 4px;
+      padding: 4px 6px 3px;
+      font-size: 14px;
+      letter-spacing: .4px;
+    }
+
+    .nhs-header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 12px auto 24px;
+      padding: 0 12px;
+    }
+
+    .card {
+      background: var(--nhs-white);
+      border: 1px solid var(--nhs-border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.03);
+    }
+
+    .card-header {
+      background: #E8EDEE; /* pale grey from NHS palette */
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--nhs-border);
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .summary-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      border-bottom: 1px solid var(--nhs-border);
+      padding: 12px 16px;
+      gap: 6px;
+    }
+
+    .summary-row:last-child { border-bottom: 0; }
+
+    .key {
+      color: var(--nhs-secondary-text);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .value {
+      font-size: 16px;
+      word-break: break-word;
+    }
+
+    /* Responsive: 2-column layout on wider screens */
+    @media (min-width: 520px) {
+      .summary-row {
+        grid-template-columns: 220px 1fr;
+        align-items: start;
+      }
+      .key { padding-top: 2px; }
+    }
+
+    .badges {
+      display: inline-flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 13px;
+      line-height: 1.6;
+      border: 1px solid var(--nhs-border);
+      background: var(--nhs-white);
+    }
+    .badge.yes {
+      background: #E5F4EA; /* light success tint */
+      color: var(--nhs-success);
+      border-color: #C7E8D2;
+      font-weight: 700;
+    }
+    .badge.no {
+      background: #FCE5E3; /* light error tint */
+      color: var(--nhs-error);
+      border-color: #F6C9C5;
+      font-weight: 700;
+    }
+    .badge.unknown {
+      background: #FFF6DB; /* warm yellow tint */
+      color: #6A4B00;
+      border-color: #FFE7A6;
+      font-weight: 700;
+    }
+
+    .footer {
+      color: var(--nhs-secondary-text);
+      font-size: 13px;
+      margin-top: 12px;
+      padding: 0 4px;
+    }
+
+    a { color: var(--nhs-link); }
+    a:hover { color: var(--nhs-link-hover); }
+    a:visited { color: var(--nhs-link-visited); }
+    a:active { color: var(--nhs-link-active); }
+
+    /* Buttons (optional) */
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 16px 16px;
+      border-top: 1px solid var(--nhs-border);
+      background: var(--nhs-white);
+    }
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--nhs-success);
+      color: var(--nhs-white);
+    }
+    .btn.secondary {
+      background: var(--nhs-white);
+      color: var(--nhs-blue);
+      border: 2px solid var(--nhs-blue);
+    }
+
+    /* Improve tap targets on mobile */
+    .btn, .summary-row { -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+
+<body>
+  <header class="nhs-header" role="banner">
+    <span class="lozenge" aria-hidden="true">NHS</span>
+    <h1>NHS 111 — Call Summary</h1>
+  </header>
+
+  <main class="container" role="main">
+    <section class="card" aria-labelledby="case-details-heading">
+      <div class="card-header">
+        <h2 id="case-details-heading">Caller details</h2>
+      </div>
+
+      <ul class="summary-list" aria-describedby="summary-help">
+        <li class="summary-row">
+          <div class="key">Full name</div>
+          <div class="value" id="full-name">{{context.lead1.firstName}}</div>
+        </li>
+
+        <li class="summary-row">
+          <div class="key">Patient age</div>
+          <div class="value" id="patient-age">{{context.lead1.patientAge}}</div>
+        </li>
+
+        <li class="summary-row">
+          <div class="key">National Insurance number</div>
+          <div class="value" id="ni-number">{{context.lead1.nationalInsuranceNumber}}</div>
+        </li>
+
+        <li class="summary-row">
+          <div class="key">Current location</div>
+          <div class="value" id="location">{{context.lead1.currentLocation}}</div>
+        </li>
+
+        <li class="summary-row">
+          <div class="key">Callback number</div>
+          <div class="value" id="callback">+447779907973</div>
+        </li>
+
+        <li class="summary-row">
+          <div class="key">Reason for call</div>
+          <div class="value" id="reason">{{context.lead1.reasonForCall}}</div>
+        </li>
+
+        <li class="summary-row">
+          <div class="key">Shortness of breath</div>
+          <div class="value" id="sob-badge">{{context.lead1.shortnessBreath}}</div>
+        </li>
+
+        <li class="summary-row">
+          <div class="key">Chest pain</div>
+          <div class="value" id="chest-pain-badge">{{context.lead1.chestPain}}</div>
+        </li>
+
+        <li class="summary-row">
+          <div class="key">Normal temperature</div>
+          <div class="value" id="temp-badge">{{context.lead1.normalTemp}}</div>
+      </ul>
+
+      <div class="actions" role="group" aria-label="Actions">
+        <!-- Optional: wire these to X‑App events or Cognigy output -->
+        <button class="btn" data-action="confirm">Confirm &amp; continue</button>
+        <button class="btn secondary" data-action="edit">Edit details</button>
+      </div>
+    </section>
+
+    <p id="summary-help" class="footer">
+      Colours and typographic styles follow NHS England identity guidance (NHS Blue and white are core; text, link and state colours align to the NHS service manual for accessibility). 
+    </p>
+  </main>
+</body>
+</html>
