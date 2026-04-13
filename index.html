@@ -267,5 +267,81 @@
       Colours and typographic styles follow NHS England identity guidance (NHS Blue and white are core; text, link and state colours align to the NHS service manual for accessibility). 
     </p>
   </main>
+
+<script>
+  const API_URL = "https://app.nocodb.com/api/v2/tables/mifaueksikihhc7/records";
+  const API_TOKEN = "dJgfi80n8A9_TmvUoVPBw6AjNYc99Kvy4LSwwpTv"; // ⚠️ visible in browser
+
+  async function loadCallerData() {
+    try {
+      const response = await fetch(API_URL, {
+        headers: {
+          "accept": "application/json",
+          "xc-token": API_TOKEN
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.list || data.list.length === 0) {
+        throw new Error("No records returned");
+      }
+
+      // ✅ Example: use the first record
+      const record = data.list[0];
+
+      // ✅ Populate your existing fields
+      setText("full-name", record.firstName);
+      setText("patient-age", record.patientAge);
+      setText("ni-number", record.NationalInsuranceNumber);
+      setText("location", record.CurrentLocation);
+      setText("callback", record.CallbackNumber);
+      setText("reason", record.ReasonForCall);
+
+      // ✅ Badge values
+      setBadge("sob-badge", record.ShortnessOfBreath);
+      setBadge("chest-pain-badge", record.ChestPain);
+      setBadge("temp-badge", record.NormalTemperature);
+
+    } catch (err) {
+      console.error("Failed to load caller data:", err);
+    }
+  }
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value ?? "—";
+  }
+
+  function setBadge(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.innerHTML = ""; // clear
+
+    const badge = document.createElement("span");
+    badge.className = "badge";
+
+    if (value === true || value === "Yes") {
+      badge.classList.add("yes");
+      badge.textContent = "Yes";
+    } else if (value === false || value === "No") {
+      badge.classList.add("no");
+      badge.textContent = "No";
+    } else {
+      badge.classList.add("unknown");
+      badge.textContent = "Unknown";
+    }
+
+    el.appendChild(badge);
+  }
+
+  // Load when page is ready
+  document.addEventListener("DOMContentLoaded", loadCallerData);
+</script>
 </body>
 </html>
